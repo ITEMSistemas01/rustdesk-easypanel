@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  hbbs:
+    image: rustdesk/rustdesk-server:latest
+    container_name: ${APP_NAME}_hbbs
+    command: /usr/bin/hbbs -r ${APP_DOMAIN}
+    volumes:
+      - ${APP_NAME}-hbbs-data:/root
+    environment:
+      - VIRTUAL_HOST=${APP_DOMAIN}
+    ports:
+      - "21115:21115"
+      - "21116:21116"
+      - "21118:21118"
+  hbbr:
+    image: rustdesk/rustdesk-server:latest
+    container_name: ${APP_NAME}_hbbr
+    command: /usr/bin/hbbr
+    volumes:
+      - ${APP_NAME}-hbbs-data:/root
+    environment:
+      - VIRTUAL_HOST=${APP_DOMAIN}
+    ports:
+      - "21117:21117"
+    depends_on:
+      - hbbs
+  
+volumes:
+  hbbs-data:
+    name: ${APP_NAME}-hbbs-data

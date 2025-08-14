@@ -1,0 +1,29 @@
+name: RustDesk Server
+description: Servidor de relay e ID para RustDesk, um software de desktop remoto de código aberto.
+icon: https://raw.githubusercontent.com/rustdesk/rustdesk/master/res/icons/128x128.png
+category: remote
+services:
+  hbbs:
+    image: rustdesk/rustdesk-server:latest
+    command: /usr/bin/hbbs -r ${APP_DOMAIN}
+    volumes:
+      - ${APP_NAME}-hbbs-data:/root
+    ports:
+      - "21115:21115"
+      - "21116:21116"
+      - "21118:21118"
+    environment:
+      - PUID=1000
+      - PGID=1000
+  hbbr:
+    image: rustdesk/rustdesk-server:latest
+    command: /usr/bin/hbbr
+    volumes:
+      - ${APP_NAME}-hbbs-data:/root
+    ports:
+      - "21117:21117"
+    depends_on:
+      - hbbs
+volumes:
+  hbbs-data:
+    name: ${APP_NAME}-hbbs-data
